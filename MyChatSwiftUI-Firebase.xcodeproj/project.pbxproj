@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0084AFC229E038A800CBF32E /* MyChatSwiftUI_FirebaseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0084AFC129E038A800CBF32E /* MyChatSwiftUI_FirebaseApp.swift */; };
-		0084AFC429E038A800CBF32E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0084AFC329E038A800CBF32E /* ContentView.swift */; };
+		0084AFC429E038A800CBF32E /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0084AFC329E038A800CBF32E /* LoginView.swift */; };
 		0084AFC629E038A900CBF32E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0084AFC529E038A900CBF32E /* Assets.xcassets */; };
 		0084AFC929E038A900CBF32E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0084AFC829E038A900CBF32E /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -16,7 +16,7 @@
 /* Begin PBXFileReference section */
 		0084AFBE29E038A800CBF32E /* MyChatSwiftUI-Firebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MyChatSwiftUI-Firebase.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0084AFC129E038A800CBF32E /* MyChatSwiftUI_FirebaseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyChatSwiftUI_FirebaseApp.swift; sourceTree = "<group>"; };
-		0084AFC329E038A800CBF32E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		0084AFC329E038A800CBF32E /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		0084AFC529E038A900CBF32E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0084AFC829E038A900CBF32E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -52,7 +52,7 @@
 			isa = PBXGroup;
 			children = (
 				0084AFC129E038A800CBF32E /* MyChatSwiftUI_FirebaseApp.swift */,
-				0084AFC329E038A800CBF32E /* ContentView.swift */,
+				0084AFC329E038A800CBF32E /* LoginView.swift */,
 				0084AFC529E038A900CBF32E /* Assets.xcassets */,
 				0084AFC729E038A900CBF32E /* Preview Content */,
 			);
@@ -137,7 +137,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0084AFC429E038A800CBF32E /* ContentView.swift in Sources */,
+				0084AFC429E038A800CBF32E /* LoginView.swift in Sources */,
 				0084AFC229E038A800CBF32E /* MyChatSwiftUI_FirebaseApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
