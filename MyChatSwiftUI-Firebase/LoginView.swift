@@ -24,6 +24,7 @@ struct LoginView: View {
     @State var isLoginMode = false
     @State var email = ""
     @State var password = ""
+    @State var shouldShowImagePicker = false
     
     var body: some View {
         NavigationView{
@@ -42,11 +43,28 @@ struct LoginView: View {
                     
                     if !isLoginMode{
                         Button {
-                            
+                            shouldShowImagePicker.toggle()
                         } label: {
-                            Image(systemName: "person.fill")
-                                .font(.system(size: 64))
-                                .padding()
+                            
+                            VStack{
+                                if let image = self.image {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width : 128, height : 128)
+                                        .cornerRadius(64)
+                                }else{
+                                    Image(systemName: "person.fill")
+                                        .font(.system(size: 64))
+                                        .padding()
+                                        .foregroundColor(Color(.label))
+                                }
+                            }
+                            .overlay(RoundedRectangle(cornerRadius: 64)
+                                .stroke(Color.black,lineWidth: 3))
+                        
+                            
+                            
                         }
                     }
                         
@@ -80,12 +98,18 @@ struct LoginView: View {
                     
             }
             .navigationTitle(isLoginMode ? "Log In" : "Create Account")
-            .background(Color(.init(white: 0, alpha: 0.05)))
+            .background(Color(.init(white: 0, alpha: 0.05)).ignoresSafeArea())
             
+            
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
+        .fullScreenCover(isPresented: $shouldShowImagePicker, onDismiss: nil){
+            ImagePicker(image: $image)
         }
         
     }
     
+    @State var image: UIImage?
     private func handleAction(){
         if isLoginMode{
             loginUser()
@@ -99,13 +123,12 @@ struct LoginView: View {
         FirebaseManager.shared.auth.signIn(withEmail: email, password: password) { result, err in
             if let err = err {
                 print("Failed to login user : ", err)
-                self.loginStatusMessage = "Failed to login user : \(err)"
+                self.loginStatusMessage = "Failed to login user : \(err.localizedDescription)"
                 return
             }
             
             print("Successfully logged in as user : \(result?.user.uid ?? "")")
             self.loginStatusMessage = "Successfully logged in as user : \(result?.user.uid ?? "")"
-            
         }
     }
     
@@ -113,7 +136,7 @@ struct LoginView: View {
         FirebaseManager.shared.auth.createUser(withEmail: email, password: password) { result, err in
             if let err = err {
                 print("Failed to create user : ", err)
-                self.loginStatusMessage = "Failed to create user : \(err)"
+                self.loginStatusMessage = "Failed to create user : \(err.localizedDescription)"
                 return
             }
             
@@ -121,13 +144,7 @@ struct LoginView: View {
             self.loginStatusMessage = "Successfully created user : \(result?.user.uid ?? "")"
         }
     }
-    
-    private func lowercased(param : String) -> String{
-        return param.lowercased()
-    }
 }
-
-
 
 struct ContentView_Previews1: PreviewProvider {
     static var previews: some View {
