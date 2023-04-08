@@ -7,8 +7,11 @@
 
 import SwiftUI
 
+
 @main
 struct MyChatSwiftUI_FirebaseApp: App {
+    
+    
     var body: some Scene {
         WindowGroup {
             LoginView()
