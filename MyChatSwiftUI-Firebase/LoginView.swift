@@ -7,14 +7,20 @@
 
 import SwiftUI
 import Firebase
+import FirebaseStorage
 
 class FirebaseManager: NSObject {
+    
     let auth : Auth
+    let storage : Storage
+    
     static let shared = FirebaseManager()
     
     override init(){
         FirebaseApp.configure()
+        
         self.auth = Auth.auth()
+        self.storage = Storage.storage()
         super.init()
     }
 }
@@ -73,11 +79,12 @@ struct LoginView: View {
                             .keyboardType(.emailAddress)
                             .textInputAutocapitalization(.never)
                             
+                            
                         SecureField("Password", text: $password)
                     }
                     .padding(12)
                     .background(Color.white)
-                    
+                    .cornerRadius(5)
                     
                     Button{
                         handleAction()
@@ -90,6 +97,7 @@ struct LoginView: View {
                                 .font(.system(size: 14,weight: .semibold))
                             Spacer()
                         }.background(Color.blue)
+                            .cornerRadius(5)
                     }
                     Text(self.loginStatusMessage)
                         .foregroundColor(.red)
@@ -142,7 +150,33 @@ struct LoginView: View {
             
             print("Successfully created user : \(result?.user.uid ?? "")")
             self.loginStatusMessage = "Successfully created user : \(result?.user.uid ?? "")"
+            
+            self.persistImageToStorage()
         }
+    }
+    
+    private func persistImageToStorage(){
+        
+        guard let uid = FirebaseManager.shared.auth.currentUser?.uid
+            else { return }
+        let ref = FirebaseManager.shared.storage.reference(withPath: uid)
+        guard let imageData = self.image?.jpegData(compressionQuality: 0.5)
+            else { return}
+        ref.putData(imageData) { metadata, err in
+            if let err = err {
+                self.loginStatusMessage = "Failed to push image to Storage: \(err.localizedDescription)"
+                return
+            }
+            
+            ref.downloadURL { url, err in
+                if let err = err {
+                    self.loginStatusMessage = "Failed to retrieve downloadURL: \(err.localizedDescription)"
+                }
+                
+                self.loginStatusMessage = "Successfully stored image with url: \(url?.absoluteString ?? "")"
+            }
+        }
+        
     }
 }
 
