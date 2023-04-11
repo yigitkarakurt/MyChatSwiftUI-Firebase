@@ -16,6 +16,7 @@
 		0084AFC629E038A900CBF32E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0084AFC529E038A900CBF32E /* Assets.xcassets */; };
 		0084AFC929E038A900CBF32E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0084AFC829E038A900CBF32E /* Preview Assets.xcassets */; };
 		009B4F2A29E539E4009FD21B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 009B4F2929E539E4009FD21B /* GoogleService-Info.plist */; };
+		009B4F2C29E54D20009FD21B /* MainMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009B4F2B29E54D20009FD21B /* MainMessagesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		0084AFC529E038A900CBF32E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0084AFC829E038A900CBF32E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		009B4F2929E539E4009FD21B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		009B4F2B29E54D20009FD21B /* MainMessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMessagesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 			children = (
 				0084AFC129E038A800CBF32E /* MyChatSwiftUI_FirebaseApp.swift */,
 				0084AFC329E038A800CBF32E /* LoginView.swift */,
+				009B4F2B29E54D20009FD21B /* MainMessagesView.swift */,
 				0084AFC529E038A900CBF32E /* Assets.xcassets */,
 				005A776E29E17DFF001DEA57 /* ImagePicker.swift */,
 				009B4F2929E539E4009FD21B /* GoogleService-Info.plist */,
@@ -159,6 +162,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				005A776F29E17DFF001DEA57 /* ImagePicker.swift in Sources */,
+				009B4F2C29E54D20009FD21B /* MainMessagesView.swift in Sources */,
 				0084AFC429E038A800CBF32E /* LoginView.swift in Sources */,
 				0084AFC229E038A800CBF32E /* MyChatSwiftUI_FirebaseApp.swift in Sources */,
 			);
