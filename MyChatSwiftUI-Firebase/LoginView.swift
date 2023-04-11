@@ -43,7 +43,7 @@ struct LoginView: View {
                     
                     Picker(selection: $isLoginMode, label: Text("Picker ere")) {
                         
-                        Text("Login")
+                        Text("Log In")
                             .tag(true)
                         Text("Create Account")
                             .tag(false)
