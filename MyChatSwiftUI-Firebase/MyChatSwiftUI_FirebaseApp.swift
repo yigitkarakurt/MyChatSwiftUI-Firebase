@@ -14,7 +14,9 @@ struct MyChatSwiftUI_FirebaseApp: App {
     
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            LoginView(didCompleteLoginProcess:  {
+                
+            })
         }
     }
 }
