@@ -54,6 +54,7 @@ class MainMessagesViewModel: ObservableObject{
 struct MainMessagesView: View {
     
     @State var shouldShowLogOutOptions = false
+    @State var shouldNavigateToChatLogView = false
     @ObservedObject private var vm = MainMessagesViewModel()
     
     var body: some View {
@@ -63,6 +64,10 @@ struct MainMessagesView: View {
             VStack{
                 customNavBar
                 messageView
+                
+                NavigationLink("", isActive: $shouldNavigateToChatLogView, destination: {
+                    ChatLogView(chatUser: self.chatUser)
+                })
             }
             .overlay(
                 newMessageButton, alignment: .bottom)
@@ -90,9 +95,9 @@ struct MainMessagesView: View {
             VStack(alignment: .leading, spacing: 4) {
                 let email = vm.chatUser?.email.replacingOccurrences(of: "@gmail.com", with: "") ?? ""
                 
-                Text(email)
+                Text(email.capitalized)
                     .font(.system(size: 24,weight: .bold))
-                
+                    
                 HStack {
                     Circle()
                         .foregroundColor(.green)
@@ -137,30 +142,35 @@ struct MainMessagesView: View {
     private var messageView: some View{
         ScrollView {
             ForEach(0..<10, id: \.self){ num in
-                
                 VStack{
-                    HStack(spacing: 16) {
-                        Image(systemName: "person.fill")
-                            .font(.system(size : 32))
-                            .padding(8)
-                            .overlay(RoundedRectangle(cornerRadius: 44)
-                                .stroke(Color(.label), lineWidth : 1)
-                            )
+                    NavigationLink {
+                        Text("Destination")
+                    } label: {
+                        HStack(spacing: 16) {
+                            Image(systemName: "person.fill")
+                                .font(.system(size : 32))
+                                .padding(8)
+                                .overlay(RoundedRectangle(cornerRadius: 44)
+                                    .stroke(Color(.label), lineWidth : 1)
+                                )
+                                
                             
-                        
-                        VStack(alignment: .leading){
-                            Text("User Name")
-                                .font(.system(size: 16,weight: .bold))
-                            Text("Message sent to user")
-                                .font(.system(size: 14))
-                                .foregroundColor(Color(.lightGray))
-                        
+                            VStack(alignment: .leading){
+                                Text("User Name")
+                                    .font(.system(size: 16,weight: .bold))
+                                Text("Message sent to user")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(Color(.lightGray))
+                            
+                            }
+                            Spacer()
+                            
+                            Text("22d")
+                                .font(.system(size: 14,weight: .semibold))
                         }
-                        Spacer()
-                        
-                        Text("22d")
-                            .font(.system(size: 14,weight: .semibold))
                     }
+
+                    
                     Divider()
                         .padding(.vertical,8)
                 }.padding(.horizontal)
@@ -188,10 +198,18 @@ struct MainMessagesView: View {
                 
         }
         .fullScreenCover(isPresented: $shouldShowNewMessageScreen) {
-            CreateNewMessageView()
+            CreateNewMessageView(didSelectNewUser: { user in
+                print(user.email)
+                self.shouldNavigateToChatLogView.toggle()
+                self.chatUser = user
+            })
+            
         }
     }
+    
+    @State var chatUser: ChatUser?
 }
+
 
 struct MainMessagesView_Previews: PreviewProvider {
     static var previews: some View {

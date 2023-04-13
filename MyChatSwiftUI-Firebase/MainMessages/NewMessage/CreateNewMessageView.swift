@@ -42,6 +42,7 @@ class CreateNewMessageViewModel: ObservableObject{
 
 struct CreateNewMessageView: View {
     
+    let didSelectNewUser: (ChatUser) -> ()
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -55,6 +56,7 @@ struct CreateNewMessageView: View {
                     
                     Button {
                         presentationMode.wrappedValue.dismiss()
+                        didSelectNewUser(user)
                     } label: {
                         HStack{
                             WebImage(url: URL(string: user.profileImageUrl))
@@ -69,13 +71,14 @@ struct CreateNewMessageView: View {
                         }.padding(.horizontal)
                         Divider()
                             .padding(.vertical, 8)
-                    }                
+                    }
                 }
             }.navigationTitle("New Message")
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         Button{
                             presentationMode.wrappedValue.dismiss()
+                            
                         }label: {
                             Text("Cancel")
                         }
@@ -87,6 +90,7 @@ struct CreateNewMessageView: View {
 
 struct CreateNewMessageView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateNewMessageView()
+        MainMessagesView()
+        
     }
 }
