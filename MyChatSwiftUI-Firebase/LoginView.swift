@@ -11,7 +11,7 @@ struct LoginView: View {
     
     let didCompleteLoginProcess: () -> ()
     
-    @State private var isLoginMode = true
+    @State private var isLoginMode = false
     @State private var email = ""
     @State private var password = ""
     @State private var shouldShowImagePicker = false
@@ -22,7 +22,7 @@ struct LoginView: View {
                 
                 VStack(spacing : 16){
                     
-                    Picker(selection: $isLoginMode, label: Text("Picker ere")) {
+                    Picker(selection: $isLoginMode, label: Text("Picker here")) {
                         
                         Text("Log In")
                             .tag(true)
@@ -52,9 +52,6 @@ struct LoginView: View {
                             }
                             .overlay(RoundedRectangle(cornerRadius: 64)
                                 .stroke(Color.black,lineWidth: 3))
-                        
-                            
-                            
                         }
                     }
                         
@@ -94,9 +91,11 @@ struct LoginView: View {
             
             
         }
+        
         .navigationViewStyle(StackNavigationViewStyle())
         .fullScreenCover(isPresented: $shouldShowImagePicker, onDismiss: nil){
             ImagePicker(image: $image)
+                .ignoresSafeArea()
         }
         
     }
@@ -123,6 +122,7 @@ struct LoginView: View {
             self.loginStatusMessage = "Successfully logged in as user : \(result?.user.uid ?? "")"
             
             self.didCompleteLoginProcess()
+            
         }
     }
     

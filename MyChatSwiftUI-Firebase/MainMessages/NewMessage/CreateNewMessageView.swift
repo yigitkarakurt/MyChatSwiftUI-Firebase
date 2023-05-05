@@ -61,6 +61,7 @@ struct CreateNewMessageView: View {
                         HStack{
                             WebImage(url: URL(string: user.profileImageUrl))
                                 .resizable()
+                                .scaledToFill()
                                 .frame(width: 50, height: 50)
                                 .clipped()
                                 .cornerRadius(50)

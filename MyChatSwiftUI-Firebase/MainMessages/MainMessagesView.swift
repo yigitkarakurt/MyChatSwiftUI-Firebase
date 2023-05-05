@@ -13,6 +13,7 @@ class MainMessagesViewModel: ObservableObject{
     
     @Published var errorMessage = ""
     @Published var chatUser : ChatUser?
+    @Published var isUserCurrentlyLoggedOut = false
     
     init(){
         DispatchQueue.main.async {
@@ -22,11 +23,13 @@ class MainMessagesViewModel: ObservableObject{
         fetchCurrentUser()
     }
     
-    public func fetchCurrentUser(){
+    func fetchCurrentUser(){
         
         guard let uid = FirebaseManager.shared.auth.currentUser?.uid else{
             self.errorMessage = "Could not find firebase uid"
-            return }
+            return
+            
+        }
         
         self.errorMessage = "\(uid)"
         FirebaseManager.shared.firestore.collection("users").document(uid).getDocument { snapshot, error in
@@ -42,7 +45,6 @@ class MainMessagesViewModel: ObservableObject{
             self.chatUser = .init(data: data)
         }
     }
-    @Published var isUserCurrentlyLoggedOut = false
     
     func handleSignOut(){
         isUserCurrentlyLoggedOut.toggle()
@@ -130,7 +132,7 @@ struct MainMessagesView: View {
                     .cancel()
             ])
         }
-        .fullScreenCover(isPresented: $vm.isUserCurrentlyLoggedOut) {
+        .fullScreenCover(isPresented: $vm.isUserCurrentlyLoggedOut, onDismiss: nil) {
             LoginView(didCompleteLoginProcess:     {
                 self.vm.isUserCurrentlyLoggedOut = false
                 self.vm.fetchCurrentUser()
@@ -138,7 +140,7 @@ struct MainMessagesView: View {
         }
     }
     
-    
+ 
     private var messageView: some View{
         ScrollView {
             ForEach(0..<10, id: \.self){ num in
