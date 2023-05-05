@@ -38,6 +38,23 @@ class ChatLogViewModel: ObservableObject{
                 return
             }
         }
+        print("Successfully saved current user sending message")
+        
+        let recipientMessageDocument = FirebaseManager.shared.firestore
+            .collection("messages")
+            .document(toId)
+            .collection(fromId)
+            .document()
+        
+        recipientMessageDocument.setData(messageData) { error in
+            if let error = error {
+                self.errorMessage = "Failed to save message into Firestore: \(error.localizedDescription)"
+                return
+            }
+        }
+        print("Recipient saved message as well")
+        self.chatText = ""
+        
     }
 }
 
@@ -137,9 +154,9 @@ private struct DescriptionPlaceHolder: View {
 struct ChatLogView_Previews: PreviewProvider {
     static var previews: some View {
         
-        NavigationView {
-            ChatLogView(chatUser: .init(data: ["uid" : "nOdbsJXzoFbx8L8ZfUCt5zHOGnn2" ,"email" : "yigit@gmail.com"]))
-        }
-        
+        //NavigationView {
+        //    ChatLogView(chatUser: .init(data: ["uid" : "nOdbsJXzoFbx8L8ZfUCt5zHOGnn2" ,"email" : "yigit@gmail.com"]))
+        //}
+        MainMessagesView()
     }
 }
