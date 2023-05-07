@@ -12,6 +12,8 @@ struct FirebaseConstants {
     static let fromId = "fromId"
     static let toId = "toId"
     static let text = "text"
+    static let messages = "messages"
+    static let timestamp = "timestamp"
 }
 
 struct ChatMessage: Identifiable {
@@ -65,6 +67,10 @@ class ChatLogViewModel: ObservableObject{
                         self.chatMessages.append(.init(documentId: change.document.documentID, data: data))
                     }
                 })
+                DispatchQueue.main.async {
+                    self.count += 1
+                }
+                
             }
     }
     
@@ -75,21 +81,23 @@ class ChatLogViewModel: ObservableObject{
         guard let toId = chatUser?.uid else { return }
         
         let document = FirebaseManager.shared.firestore
-            .collection("messages")
+            .collection(FirebaseConstants.messages)
             .document(fromId)
             .collection(toId)
             .document()
         
-        let messageData = [FirebaseConstants.fromId: fromId, FirebaseConstants.toId: toId, FirebaseConstants.text: self.chatText, "timestamp": Timestamp()] as [String : Any]
+        let messageData = [FirebaseConstants.fromId: fromId, FirebaseConstants.toId: toId, FirebaseConstants.text: self.chatText, FirebaseConstants.timestamp: Timestamp()] as [String : Any]
         
         document.setData(messageData) { error in
             if let error = error {
                 self.errorMessage = "Failed to save message into Firestore: \(error.localizedDescription)"
                 return
             }
+            
+            print("Successfully saved current user sending message")
+            self.chatText = ""
+            self.count += 1
         }
-        print("Successfully saved current user sending message")
-        self.chatText = ""
         
         let recipientMessageDocument = FirebaseManager.shared.firestore
             .collection("messages")
@@ -102,11 +110,10 @@ class ChatLogViewModel: ObservableObject{
                 self.errorMessage = "Failed to save message into Firestore: \(error.localizedDescription)"
                 return
             }
+            print("Recipient saved message as well")
         }
-        print("Recipient saved message as well")
-        
-        
     }
+    @Published var count = 0
 }
 
 struct ChatLogView: View {
@@ -129,49 +136,34 @@ struct ChatLogView: View {
         .navigationTitle(chatUser?.email ?? "")
             .navigationBarTitleDisplayMode(.inline)
             
+            
     }
+    static let emptyScrollToString = "Empty"
     
     private var messagesView: some View{
         VStack{
             if #available(iOS 15.0, *){
                 ScrollView {
-                    ForEach(vm.chatMessages){ message in
+                    ScrollViewReader{ scrollViewProxy in
                         VStack{
-                            if message.fromId == FirebaseManager.shared.auth.currentUser?.uid {
-                                HStack{
-                                    Spacer()
-                                    HStack{
-                                        Text(message.text)
-                                            .foregroundColor(.white)
-                                    }
-                                    .padding()
-                                    .background(Color.blue)
-                                    .cornerRadius(8)
-                                }
+                            ForEach(vm.chatMessages){ message in
+                                MessageView(message: message)
                                 
-                            }else{
-                                HStack{
-                                    
-                                    HStack{
-                                        Text(message.text)
-                                            .foregroundColor(.black)
-                                    }
-                                    .padding()
-                                    .background(Color.white)
-                                    .cornerRadius(8)
-                                    Spacer()
-                                }
-                                .padding(.horizontal)
-                                .padding(.top,8)
                             }
+
+                            HStack{ Spacer()}
+                                .id(Self.emptyScrollToString)
+                        }
+                        .onReceive(vm.$count) { _ in
+                            
+                            withAnimation(.easeOut(duration: 0.5)) {
+                                scrollViewProxy.scrollTo("Empty", anchor: .bottom)
+                            }
+                            
                         }
                         
-                        
+                            
                     }
-                    .padding(.horizontal)
-                    .padding(.top,8)
-
-                    HStack{ Spacer()}
                     
                 }
                 .background(Color(.init(white: 0.95, alpha: 1)))
@@ -179,6 +171,8 @@ struct ChatLogView: View {
                     chatBottomBar
                         .background(Color(.systemBackground).ignoresSafeArea())
                 }
+            }else {
+                
             }
         }
         
@@ -211,6 +205,43 @@ struct ChatLogView: View {
         .padding(.horizontal)
         .padding(.vertical,8)
        
+    }
+}
+
+struct MessageView: View{
+    
+    let message: ChatMessage
+    
+    var body: some View{
+        VStack{
+            if message.fromId == FirebaseManager.shared.auth.currentUser?.uid {
+                HStack{
+                    Spacer()
+                    HStack{
+                        Text(message.text)
+                            .foregroundColor(.white)
+                    }
+                    .padding()
+                    .background(Color.blue)
+                    .cornerRadius(8)
+                }
+                
+            }else{
+                HStack{
+                    
+                    HStack{
+                        Text(message.text)
+                            .foregroundColor(.black)
+                    }
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    Spacer()
+                }
+            }
+        }
+        .padding(.horizontal)
+        .padding(.top,8)
     }
 }
 
