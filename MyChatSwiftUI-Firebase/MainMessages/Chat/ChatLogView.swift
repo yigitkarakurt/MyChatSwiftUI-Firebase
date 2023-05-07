@@ -14,6 +14,8 @@ struct FirebaseConstants {
     static let text = "text"
     static let messages = "messages"
     static let timestamp = "timestamp"
+    static let profileImageUrl = "profileImageUrl"
+    static let email = "email"
 }
 
 struct ChatMessage: Identifiable {
@@ -95,6 +97,7 @@ class ChatLogViewModel: ObservableObject{
             }
             
             print("Successfully saved current user sending message")
+            self.persistRecentMessage()
             self.chatText = ""
             self.count += 1
         }
@@ -113,6 +116,36 @@ class ChatLogViewModel: ObservableObject{
             print("Recipient saved message as well")
         }
     }
+    private func persistRecentMessage(){
+        guard let chatUser = chatUser else { return }
+        guard let uid = FirebaseManager.shared.auth.currentUser?.uid else { return }
+        guard let toId = self.chatUser?.uid else { return }
+        
+        let document = FirebaseManager.shared.firestore
+            .collection("recent_messages")
+            .document(uid)
+            .collection("messages")
+            .document(toId)
+        
+        let data = [
+            FirebaseConstants.timestamp: Timestamp(),
+            FirebaseConstants.text: self.chatText,
+            FirebaseConstants.fromId: uid,
+            FirebaseConstants.toId: toId,
+            FirebaseConstants.profileImageUrl: chatUser.profileImageUrl,
+            FirebaseConstants.email: chatUser.email
+        ] as [String : Any]
+        
+        document.setData(data){ error in
+            if let error = error{
+                self.errorMessage = "Failed to save recent message: \(error.localizedDescription)"
+                print("Failed to save recent message: \(error.localizedDescription)")
+                return
+            }
+            
+        }
+    }
+    
     @Published var count = 0
 }
 
