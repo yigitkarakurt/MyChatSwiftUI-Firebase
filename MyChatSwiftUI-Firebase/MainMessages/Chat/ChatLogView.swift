@@ -44,13 +44,14 @@ class ChatLogViewModel: ObservableObject{
     }
     private func fetchMessages(){
         
-        guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return }
+        guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return } 
         guard let toId = chatUser?.uid else { return }
 
         FirebaseManager.shared.firestore
             .collection("messages")
             .document(fromId)
             .collection(toId)
+            .order(by: "timestamp")
             .addSnapshotListener { querySnapshot, error in
                 if let error = error{
                     self.errorMessage = "Failed to listen for messages: \(error.localizedDescription)"
@@ -64,7 +65,6 @@ class ChatLogViewModel: ObservableObject{
                         self.chatMessages.append(.init(documentId: change.document.documentID, data: data))
                     }
                 })
-               
             }
     }
     
@@ -136,21 +136,40 @@ struct ChatLogView: View {
             if #available(iOS 15.0, *){
                 ScrollView {
                     ForEach(vm.chatMessages){ message in
-                       
-                        HStack{
-                            Spacer()
-                            HStack{
-                                Text(message.text)
-                                    .foregroundColor(.white)
+                        VStack{
+                            if message.fromId == FirebaseManager.shared.auth.currentUser?.uid {
+                                HStack{
+                                    Spacer()
+                                    HStack{
+                                        Text(message.text)
+                                            .foregroundColor(.white)
+                                    }
+                                    .padding()
+                                    .background(Color.blue)
+                                    .cornerRadius(8)
+                                }
+                                
+                            }else{
+                                HStack{
+                                    
+                                    HStack{
+                                        Text(message.text)
+                                            .foregroundColor(.black)
+                                    }
+                                    .padding()
+                                    .background(Color.white)
+                                    .cornerRadius(8)
+                                    Spacer()
+                                }
+                                .padding(.horizontal)
+                                .padding(.top,8)
                             }
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(8)
                         }
-                        .padding(.horizontal)
-                        .padding(.top,8)
+                        
                         
                     }
+                    .padding(.horizontal)
+                    .padding(.top,8)
 
                     HStack{ Spacer()}
                     
