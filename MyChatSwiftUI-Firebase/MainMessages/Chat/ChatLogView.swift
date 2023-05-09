@@ -8,31 +8,9 @@
 import SwiftUI
 import FirebaseFirestore
 
-struct FirebaseConstants {
-    static let fromId = "fromId"
-    static let toId = "toId"
-    static let text = "text"
-    static let messages = "messages"
-    static let timestamp = "timestamp"
-    static let profileImageUrl = "profileImageUrl"
-    static let email = "email"
-}
 
-struct ChatMessage: Identifiable {
-    var id: String{ documentId }
-    
-    let documentId: String
-    let fromId, toId, text:String
-    
-    init(documentId: String, data: [String:Any]){
-        self.documentId = documentId
-        self.fromId = data[FirebaseConstants.fromId] as? String ?? ""
-        self.toId = data[FirebaseConstants.toId] as? String ?? ""
-        self.text = data[FirebaseConstants.text] as? String ?? ""
-        
-        
-    }
-}
+
+
 
 class ChatLogViewModel: ObservableObject{
     @Published var chatText = ""

@@ -18,14 +18,14 @@ class CreateNewMessageViewModel: ObservableObject{
     }
     
     private func fetchAllUsers(){
-        FirebaseManager.shared.firestore.collection("users").getDocuments { documentSnapshot, error in
+        FirebaseManager.shared.firestore.collection("users").getDocuments { documentsSnapshot, error in
             if let error = error {
                 self.errorMessage = "Failed to fetch users: \(error.localizedDescription)"
                 print("Failed to fetch users: \(error.localizedDescription)")
                 return
             }
             
-            documentSnapshot?.documents.forEach({ snapshot in
+            documentsSnapshot?.documents.forEach({ snapshot in
                 let data = snapshot.data()
                 let currentUserUid = FirebaseManager.shared.auth.currentUser?.uid ?? ""
                 let user = ChatUser(data: data)

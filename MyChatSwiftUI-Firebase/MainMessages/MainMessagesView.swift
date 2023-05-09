@@ -8,25 +8,7 @@
 import SwiftUI
 import SDWebImageSwiftUI
 import FirebaseFirestore
-
-struct RecentMessage: Identifiable{
-    var id: String{ documentId }
-    let documentId: String
-    let text, email: String
-    let fromId, toId : String
-    let profileImageUrl: String
-    let timestamp: Timestamp
-    
-    init(documentId: String, data: [String:Any]){
-        self.documentId = documentId
-        self.text = data["text"] as? String ?? ""
-        self.fromId = data["fromId"] as? String ?? ""
-        self.toId = data["toId"] as? String ?? ""
-        self.profileImageUrl = data["profileImageUrl"] as? String ?? ""
-        self.email = data["email"] as? String ?? ""
-        self.timestamp = data["timestamp"] as? Timestamp ?? Timestamp(date: Date())
-    }
-}
+import FirebaseFirestoreSwift
 
 class MainMessagesViewModel: ObservableObject{
     
@@ -62,15 +44,20 @@ class MainMessagesViewModel: ObservableObject{
                 querySnapshot?.documentChanges.forEach({ change in
                     let docId = change.document.documentID
                     if let index = self.recentMessages.firstIndex(where: { rm in
-                        return rm.documentId == docId
+                        return rm.id == docId
                     }){
                         self.recentMessages.remove(at: index)
+                        
                     }
-                  
-                    self.recentMessages.insert(.init(documentId: docId, data: change.document.data()), at: 0)
-                    
-                   
-                    
+                    do{
+                        if let rm = try? change.document.data(as: RecentMessage.self){
+                            self.recentMessages.insert(rm, at: 0)
+                            
+                        }
+                    }catch{
+                        print(error)
+                    }
+                                              
                 })
             }
     }
@@ -191,7 +178,26 @@ struct MainMessagesView: View {
             })
         }
     }
-    
+
+    func elapsedTimeString(for date: Date) -> String {
+        let secondsElapsed = Int(Date().timeIntervalSince(date))
+        
+        if secondsElapsed < 60 {
+            return "Just Now"
+        }
+        else if secondsElapsed < 3600 {
+            let minutes = secondsElapsed / 60
+            return "\(minutes)m"
+        }
+        else if secondsElapsed < 86400 {
+            let hours = secondsElapsed / 3600
+            return "\(hours)h"
+        }
+        else {
+            let days = secondsElapsed / 86400
+            return "\(days)d"
+        }
+    }
  
     private var messageView: some View{
         ScrollView {
@@ -202,12 +208,13 @@ struct MainMessagesView: View {
                     } label: {
                         HStack(spacing: 16) {
                             WebImage(url: URL(string: recentMessage.profileImageUrl))
+                                .resizable()
                                 .scaledToFill()
                                 .frame(width: 64, height: 64)
                                 .clipped()
                                 .cornerRadius(64)
                                 .overlay(RoundedRectangle(cornerRadius: 64)
-                                    .stroke(Color(.black), lineWidth : 1)
+                                    .stroke(Color(.label), lineWidth : 1)
                                 )
                                 .shadow(radius: 5)
                             
@@ -215,6 +222,7 @@ struct MainMessagesView: View {
                                 Text(recentMessage.email.replacingOccurrences(of: "@gmail.com", with: "").capitalized )
                                     .font(.system(size: 16,weight: .bold))
                                     .foregroundColor(Color(.label))
+                                    .multilineTextAlignment(.leading)
                                 Text(recentMessage.text)
                                     .font(.system(size: 14))
                                     .foregroundColor(Color(.darkGray))
@@ -223,7 +231,7 @@ struct MainMessagesView: View {
                             }
                             Spacer()
                             
-                            Text("22d")
+                            Text(elapsedTimeString(for: recentMessage.timestamp))
                                 .font(.system(size: 14,weight: .semibold))
                         }
                     }
@@ -235,6 +243,8 @@ struct MainMessagesView: View {
             }.padding(.bottom, 50)
         }
     }
+    
+    
     @State var shouldShowNewMessageScreen = false
     
     private var newMessageButton: some View {
