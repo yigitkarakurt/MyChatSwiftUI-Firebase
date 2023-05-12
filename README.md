@@ -1,5 +1,13 @@
-# MyChatSwiftUI-Firebase
-A messaging application that allows the user to instantly send messages and create a profile.
+MyChatSwiftUI App
+
+This is a messaging app built using Firebase that allows users to create profiles and send messages to other users.
+
+Features
+
+* User authentication with Firebase Authentication
+* User profile creation and editing
+* Real-time messaging using Firebase Cloud Firestore
+* Notification of new messages using Firebase Cloud Messaging
 
 
 
